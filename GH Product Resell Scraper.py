@@ -50,7 +50,7 @@ class Product():
 class Scraper():
     
     # class-wide variables no need for a constructor
-    executable_path = Service('') # put chromedriver path
+    executable_path = Service('') # put chromedriver path here
     browser = webdriver.Chrome(service = executable_path)
     wait = WebDriverWait(browser, 5)
     product_list = []
@@ -297,6 +297,10 @@ class Scraper():
                 print("\nCouldn't Find File")
                 combined_product_df = product_df
             
+            # drop rows that are empty
+            combined_product_df.drop(combined_product_df.index[combined_product_df['Category'] == ''], inplace = True)
+            combined_product_df.drop(combined_product_df.index[combined_product_df['Ebay Price'] == 0], inplace = True)
+            
             # saves as an excel file 
             combined_product_df.to_excel(file, index = False) 
             print('\nSuccessfully exported to:', file)
@@ -331,12 +335,28 @@ class Scraper():
         current_product_df.to_excel(file, index = False) 
         print('\nSuccessfully exported to:', file)
         
+# modifies a dataframe that is read in
+def modify_dataframe(file = ''):
+    
+    # reads in dataframe
+    df = pd.read_excel(file)
+    
+    # can modify value at cell
+    #df.at[66, 'Binary Answer Check'] = 0
+    
+    # drop rows that are empty
+    df.drop(df.index[df['Category'] == ''], inplace = True)
+    df.drop(df.index[df['Ebay Price'] == 0], inplace = True)
+    
+    # exports to excel
+    df.to_excel(file, index = False) 
+        
 def main():
     
     Scraper_obj = Scraper()
     
     # parameter is scrape extra which can be set to True or False
-    Scraper_obj.scrape_deal_news(scrape_extra = True)
+    Scraper_obj.scrape_deal_news(scrape_extra = False)
     
     # scrapes ebay no parameters needed
     Scraper_obj.scrape_ebay()
@@ -352,5 +372,8 @@ def main():
     
     # allows to change the manual answer columns and takes file as a parameter
     Scraper_obj.change_manual_answers(file = '')
+
+    # modifies dataframe and takes file as a parameter
+    #modify_dataframe(file = '')
          
 main()

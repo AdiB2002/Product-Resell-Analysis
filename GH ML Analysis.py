@@ -111,9 +111,8 @@ def exploratory_analysis(df = pd.DataFrame()):
 
 def main():
     
-    # read in excel file as dataframe and drop columns that are null
-    df = pd.read_excel('')
-    df = df.dropna()  
+    # read in excel file as dataframe and drop rows that are null
+    df = pd.read_excel('') 
     
     # takes dataframe as parameter and has a couple exploratory analysis methods to look at 
     exploratory_analysis(df)
